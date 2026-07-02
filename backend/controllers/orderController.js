@@ -77,3 +77,24 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// Fitur Hapus (Delete): Membatalkan pesanan
+exports.deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order)
+      return res.status(404).json({ error: "Pesanan tidak ditemukan" });
+
+    if (order.status !== "Diproses") {
+      return res.status(400).json({
+        error: "Pesanan yang sudah dikirim/selesai tidak bisa dibatalkan!",
+      });
+    }
+
+    await Order.findByIdAndDelete(req.params.id);
+    res.json({
+      message: "Pesanan berhasil dibatalkan dan dihapus dari database.",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

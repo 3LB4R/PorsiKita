@@ -8,7 +8,8 @@ const apiRoutes = require("./routes/api");
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+const logger = require("./middleware/logger");
+app.use(logger); // Middleware aktif!
 // Database Connection
 mongoose
   .connect(process.env.MONGO_URI)

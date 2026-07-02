@@ -20,7 +20,31 @@ export default function OrderHistory() {
         status: newStatus,
       });
       fetchOrders(); // Refresh data setelah update
-
+      const handleDelete = async (id) => {
+        Swal.fire({
+          title: "Yakin mau batalin tender?",
+          text: "Data pesanan akan dihapus permanen dari database!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ff4757",
+          cancelButtonColor: "gray",
+          confirmButtonText: "Ya, Batalkan!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await axios.delete(`http://localhost:5000/api/orders/${id}`);
+              fetchOrders(); // Refresh halaman otomatis
+              Swal.fire(
+                "Dibatalkan!",
+                "Berkas pesanan sudah dimusnahkan.",
+                "success",
+              );
+            } catch (err) {
+              Swal.fire("Gagal!", err.response.data.error, "error");
+            }
+          }
+        });
+      };
       // POPUP MODERN SUCCESS
       Swal.fire({
         title: "Manipulasi Berhasil!",
@@ -98,6 +122,22 @@ export default function OrderHistory() {
             className="card"
             style={{ borderLeft: `5px solid var(--primary-color)` }}
           >
+            {order.status === "Diproses" && (
+              <button
+                onClick={() => handleDelete(order._id)}
+                style={{
+                  background: "#ff4757",
+                  color: "white",
+                  border: "none",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                🗑️ Batalkan Proyek
+              </button>
+            )}
             <div
               style={{
                 display: "flex",
