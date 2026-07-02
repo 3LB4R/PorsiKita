@@ -32,7 +32,22 @@ export default function RestaurantDetail() {
       ]);
     }
   };
-
+  const decreaseQuantity = (menuId) => {
+    const existing = cart.find((item) => item.menuId === menuId);
+    if (existing.quantity === 1) {
+      // Jika jumlahnya sisa 1, hapus item dari keranjang
+      setCart(cart.filter((item) => item.menuId !== menuId));
+    } else {
+      // Jika lebih dari 1, kurangi jumlahnya
+      setCart(
+        cart.map((item) =>
+          item.menuId === menuId
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
+        ),
+      );
+    }
+  };
   const handleCheckout = async () => {
     const totalPrice = cart.reduce(
       (acc, item) => acc + item.price * item.quantity,
@@ -136,13 +151,74 @@ export default function RestaurantDetail() {
             {cart.map((c, i) => (
               <div
                 key={i}
-                style={{ display: "flex", justifyContent: "space-between" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "10px",
+                }}
               >
-                <span>
-                  {c.name}{" "}
-                  <b style={{ color: "var(--primary-color)" }}>x{c.quantity}</b>
+                {/* Bagian Kiri: Nama dan Tombol Plus Minus */}
+                <div>
+                  <span style={{ display: "block", fontWeight: "500" }}>
+                    {c.name}
+                  </span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.8rem",
+                      marginTop: "0.3rem",
+                    }}
+                  >
+                    <button
+                      onClick={() => decreaseQuantity(c.menuId)}
+                      style={{
+                        background: "var(--hover-bg)",
+                        color: "var(--text-color)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        padding: "0 8px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {" "}
+                      -{" "}
+                    </button>
+
+                    <b style={{ color: "var(--primary-color)" }}>
+                      {c.quantity}
+                    </b>
+
+                    <button
+                      onClick={() =>
+                        addToCart({
+                          _id: c.menuId,
+                          name: c.name,
+                          price: c.price,
+                        })
+                      }
+                      style={{
+                        background: "var(--hover-bg)",
+                        color: "var(--text-color)",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        padding: "0 8px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {" "}
+                      +{" "}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bagian Kanan: Subtotal Harga */}
+                <span style={{ fontWeight: "bold" }}>
+                  Rp {(c.price * c.quantity).toLocaleString("id-ID")}
                 </span>
-                <span>Rp {(c.price * c.quantity).toLocaleString("id-ID")}</span>
               </div>
             ))}
             <hr
