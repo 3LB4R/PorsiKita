@@ -8,6 +8,7 @@ export default function RestaurantDetail() {
   const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [cart, setCart] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("Tunai / COD");
 
   useEffect(() => {
     axios
@@ -110,7 +111,24 @@ export default function RestaurantDetail() {
               }}
             >
               <div>
-                <h4 style={{ margin: "0 0 0.5rem 0" }}>{menu.name}</h4>
+                <h4 style={{ margin: "0 0 0.5rem 0" }}>
+                  {menu.name}
+                  {/* Tambahkan tag img ini */}
+                  <img
+                    src={
+                      menu.image ||
+                      "https://via.placeholder.com/150?text=No+Image"
+                    }
+                    alt={menu.name}
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                      marginRight: "1rem",
+                    }}
+                  />
+                </h4>
                 <p style={{ margin: 0, fontWeight: "bold" }}>
                   Rp {menu.price.toLocaleString("id-ID")}
                 </p>
@@ -239,6 +257,28 @@ export default function RestaurantDetail() {
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toLocaleString("id-ID")}
               </span>
+            </div>
+            <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+              <label style={{ fontSize: "0.9rem", color: "gray" }}>
+                💳 Metode Pembayaran:
+              </label>
+              <select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "0.5rem",
+                  marginTop: "0.5rem",
+                  borderRadius: "8px",
+                  backgroundColor: "var(--bg-color)",
+                  color: "var(--text-color)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
+                <option value="Tunai / COD">Uang Tunai (COD) 💵</option>
+                <option value="QRIS">QRIS / E-Wallet 📱</option>
+                <option value="Bansos">Potong Bansos 🦅</option>
+              </select>
             </div>
             <button
               className="btn"

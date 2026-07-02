@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
 
@@ -14,37 +15,44 @@ export default function OrderHistory() {
       .then((res) => setOrders(res.data));
   };
 
+  // ✅ handleDelete SUDAH DIKELUARKAN DI SINI (SEJAJAR)
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: "Yakin mau batalin tender?",
+      text: "Data pesanan akan dihapus permanen dari database!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ff4757",
+      cancelButtonColor: "gray",
+      confirmButtonText: "Ya, Batalkan!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:5000/api/orders/${id}`);
+          fetchOrders(); // Refresh halaman otomatis
+          Swal.fire(
+            "Dibatalkan!",
+            "Berkas pesanan sudah dimusnahkan.",
+            "success",
+          );
+        } catch (err) {
+          Swal.fire(
+            "Gagal!",
+            err.response?.data?.error || "Terjadi kesalahan",
+            "error",
+          );
+        }
+      }
+    });
+  };
+
   const handleUpdateStatus = async (id, newStatus) => {
     try {
       await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
         status: newStatus,
       });
       fetchOrders(); // Refresh data setelah update
-      const handleDelete = async (id) => {
-        Swal.fire({
-          title: "Yakin mau batalin tender?",
-          text: "Data pesanan akan dihapus permanen dari database!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#ff4757",
-          cancelButtonColor: "gray",
-          confirmButtonText: "Ya, Batalkan!",
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              await axios.delete(`http://localhost:5000/api/orders/${id}`);
-              fetchOrders(); // Refresh halaman otomatis
-              Swal.fire(
-                "Dibatalkan!",
-                "Berkas pesanan sudah dimusnahkan.",
-                "success",
-              );
-            } catch (err) {
-              Swal.fire("Gagal!", err.response.data.error, "error");
-            }
-          }
-        });
-      };
+
       // POPUP MODERN SUCCESS
       Swal.fire({
         title: "Manipulasi Berhasil!",
@@ -68,6 +76,7 @@ export default function OrderHistory() {
       });
     }
   };
+
   // Fungsi untuk ngasih warna dan teks nyeleneh ke badge status
   const getStatusBadge = (status) => {
     let color, text;
@@ -133,6 +142,7 @@ export default function OrderHistory() {
                   borderRadius: "8px",
                   cursor: "pointer",
                   fontWeight: "bold",
+                  marginBottom: "1rem",
                 }}
               >
                 🗑️ Batalkan Proyek

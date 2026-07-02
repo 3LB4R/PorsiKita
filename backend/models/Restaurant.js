@@ -10,6 +10,7 @@ const restaurantSchema = new mongoose.Schema({
       price: Number,
       stock: Number,
       isAvailable: { type: Boolean, default: true },
+      image: { type: String },
     },
   ],
 });
