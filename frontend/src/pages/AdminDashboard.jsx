@@ -18,12 +18,12 @@ export default function AdminDashboard() {
   const handleDelete = async (id) => {
     Swal.fire({
       title: "Hapus Paksa?",
-      text: "Sebagai Admin, kamu memusnahkan riwayat ini secara permanen!",
+      text: "Apakah kamu yakin ingin menghapus data ini secara permanen?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ff4757",
       cancelButtonText: "Batal",
-      confirmButtonText: "Ya, Musnahkan!",
+      confirmButtonText: "Ya, Hapus data!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -31,7 +31,7 @@ export default function AdminDashboard() {
           fetchOrders(); // Refresh data otomatis
           Swal.fire(
             "Terhapus!",
-            "Riwayat pesanan berhasil dilenyapkan dari database.",
+            "Riwayat pesanan berhasil dihapus dari database.",
             "success",
           );
         } catch (err) {
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
           color: "#ff4757",
         }}
       >
-        👑 DASHBOARD KONTROL ADMIN PUSAT
+        ⚙️ Dashboard Pengelola Pesanan
       </h2>
       <div style={{ display: "grid", gap: "1.5rem", marginTop: "2rem" }}>
         {orders.map((order) => (
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
               <span style={{ fontWeight: "bold" }}>{order.status}</span>
             </div>
             <p>
-              <b>Vendor:</b> {order.restaurantId?.name || "Tender Fiktif"}
+              <b>Vendor:</b> {order.restaurantId?.name || "Tidak Diketahui"}
             </p>
             <p>
               <b>Total:</b> Rp {order.totalPrice.toLocaleString("id-ID")}

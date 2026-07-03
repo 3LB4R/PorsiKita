@@ -285,9 +285,9 @@ export default function RestaurantDetail() {
                   cursor: "pointer",
                 }}
               >
-                <option value="Tunai / COD">Uang Tunai (COD) 💵</option>
-                <option value="QRIS">QRIS / E-Wallet 📱</option>
-                <option value="Bansos">Potong Dana Bansos 🦅</option>
+                <option value="Tunai / COD">Tunai (Cash on Delivery)</option>
+                <option value="QRIS">QRIS / E-Wallet</option>
+                <option value="Transfer Bank">Transfer Bank</option>
               </select>
             </div>
 

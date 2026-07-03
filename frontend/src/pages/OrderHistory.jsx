@@ -19,13 +19,13 @@ export default function OrderHistory() {
     let color, text;
     if (status === "Diproses") {
       color = "orange";
-      text = "Lagi Di-Lobby ⏳";
+      text = "Sedang Diproses ⏳";
     } else if (status === "Dikirim") {
       color = "#3498db";
-      text = "Dikawal Voorijder 🚓";
+      text = "Sedang Dikirim 🛵";
     } else if (status === "Selesai") {
       color = "green";
-      text = "Anggaran Cair 💸";
+      text = "Selesai ✅";
     } else {
       color = "gray";
       text = status;
@@ -56,9 +56,9 @@ export default function OrderHistory() {
           paddingBottom: "1rem",
         }}
       >
-        📜 Laporan Dana... eh Riwayat Pesanan (Customer)
+        📜 Riwayat Pesanan (Customer)
       </h2>
-      {orders.length === 0 && <p>Belum ada riwayat korupsi kalori di sini.</p>}
+      {orders.length === 0 && <p>Belum ada riwayat pesanan saat ini.</p>}
 
       <div style={{ display: "grid", gap: "1.5rem", marginTop: "2rem" }}>
         {orders.map((order) => (
@@ -86,10 +86,10 @@ export default function OrderHistory() {
               {getStatusBadge(order.status)}
             </div>
             <p style={{ margin: "0.5rem 0" }}>
-              <b>🏢 Vendor:</b> {order.restaurantId?.name || "Tender Fiktif"}
+              <b>🏢 Restoran:</b> {order.restaurantId?.name || "Tender Fiktif"}
             </p>
             <p style={{ margin: "0.5rem 0" }}>
-              <b>💰 Total Proyek:</b> Rp{" "}
+              <b>💰 Total Tagihan:</b> Rp{" "}
               {order.totalPrice.toLocaleString("id-ID")}
             </p>
             <div
@@ -101,7 +101,7 @@ export default function OrderHistory() {
               }}
             >
               <p style={{ margin: "0 0 0.5rem 0", fontWeight: "bold" }}>
-                Barang Bukti:
+                Daftar Pesanan:
               </p>
               <ul style={{ margin: 0, paddingLeft: "1.2rem", color: "gray" }}>
                 {order.items.map((item) => (

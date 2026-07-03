@@ -53,7 +53,6 @@ export default function Home() {
           border-radius: 16px 16px 0 0;
         }
       `}</style>
-
       <div
         style={{
           textAlign: "center",
@@ -66,14 +65,15 @@ export default function Home() {
         }}
       >
         <h1 style={{ fontSize: "3rem", marginBottom: "0.5rem", marginTop: 0 }}>
-          Makanan Beracun Gratis 🦅
+          PorsiKita - Pesan Antar Makanan 🛵
         </h1>
         <p style={{ color: "gray", fontSize: "1.2rem", marginBottom: "2rem" }}>
-          Pilih menu makananmu sebelum harganya di-markup oknum pejabat.
+          Temukan hidangan favorit dari berbagai restoran terbaik di sekitar
+          Anda.
         </p>
         <input
           type="text"
-          placeholder="🔍 Cari tender makanan (contoh: Kopi, Nasi, Burger)..."
+          placeholder="🔍 Cari nama restoran atau jenis makanan..."
           onChange={(e) => setSearch(e.target.value)}
           style={{
             padding: "1.2rem",
@@ -89,8 +89,6 @@ export default function Home() {
           }}
         />
       </div>
-
-      {/* GRID WARUNG */}
       <div
         style={{
           display: "grid",
@@ -100,7 +98,6 @@ export default function Home() {
       >
         {restaurants.map((r) => (
           <div key={r._id} className="neon-card">
-            {/* GAMBAR WARUNG */}
             <div style={{ overflow: "hidden" }}>
               <img
                 src={
@@ -111,8 +108,6 @@ export default function Home() {
                 className="resto-img"
               />
             </div>
-
-            {/* KONTEN BER-BLUR */}
             <div className="card-content">
               <div
                 style={{
@@ -143,7 +138,6 @@ export default function Home() {
                   ⭐ {r.rating}
                 </span>
               </div>
-
               <div style={{ marginBottom: "0.8rem" }}>
                 <span
                   style={{
@@ -154,10 +148,9 @@ export default function Home() {
                     fontWeight: "bold",
                   }}
                 >
-                  🛡️ Bekingan: {r.cuisineType}
+                  🍽️ Kategori: {r.cuisineType}
                 </span>
               </div>
-
               <p
                 style={{
                   color: "var(--text-color)",
@@ -169,7 +162,6 @@ export default function Home() {
               >
                 "{r.description}"
               </p>
-
               <p
                 style={{
                   color: "gray",
@@ -178,7 +170,7 @@ export default function Home() {
                   flexGrow: 1,
                 }}
               >
-                📍 TKP: {r.address}
+                📍 Alamat: {r.address}
               </p>
 
               <Link
@@ -196,7 +188,7 @@ export default function Home() {
                     fontWeight: "bold",
                   }}
                 >
-                  Inspeksi Menu 🕵️‍♂️
+                  Lihat Menu
                 </button>
               </Link>
             </div>

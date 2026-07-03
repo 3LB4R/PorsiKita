@@ -4,11 +4,12 @@ const Restaurant = require("./models/Restaurant");
 
 const dataWarung = [
   {
-    name: "Ayam Taliwang Asli Bima",
+    name: "Ayam Taliwang Bima",
     address: "Jl. Soekarno Hatta, Bima",
-    cuisineType: "Indonesian",
+    cuisineType: "Nusantara",
     rating: 4.9,
-    description: "Pedasnya nampol, bikin nangis teringat mantan.",
+    description:
+      "Sajian ayam bakar khas Nusa Tenggara Barat dengan bumbu pedas istimewa.",
     image:
       "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&fit=crop",
     menus: [
@@ -22,17 +23,17 @@ const dataWarung = [
     ],
   },
   {
-    name: "Kopi Anak IT",
-    address: "Depan Lab Komputer",
-    cuisineType: "Beverage",
+    name: "Kopi Senja IT",
+    address: "Kawasan Kampus Terpadu",
+    cuisineType: "Minuman",
     rating: 4.7,
     description:
-      "Kopi khusus programmer. 1 teguk = 100 baris kode tanpa error.",
+      "Pilihan kopi premium untuk menemani produktivitas dan tugas harian.",
     image:
       "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&fit=crop",
     menus: [
       {
-        name: "Kopi Susu Begadang",
+        name: "Es Kopi Susu Aren",
         price: 18000,
         stock: 100,
         image:
@@ -41,17 +42,17 @@ const dataWarung = [
     ],
   },
   {
-    name: "Pizza RTX 5070 Ti",
-    address: "Jalan Teknologi No. 1",
-    cuisineType: "Italian",
-    rating: 5.0,
+    name: "Pizza Italiana",
+    address: "Jl. Sudirman No. 1",
+    cuisineType: "Barat",
+    rating: 4.8,
     description:
-      "Di-render menggunakan Ray Tracing. Pinggirannya garing parah!",
+      "Pizza autentik Italia dengan keju mozzarella panggang yang leleh.",
     image:
       "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&fit=crop",
     menus: [
       {
-        name: "Pizza Pepperoni HD",
+        name: "Pepperoni Pizza",
         price: 85000,
         stock: 10,
         image:
@@ -60,16 +61,16 @@ const dataWarung = [
     ],
   },
   {
-    name: "Nasi Padang MAN 1",
-    address: "Sebelah Sekolahan",
-    cuisineType: "Indonesian",
+    name: "Nasi Padang Raya",
+    address: "Jl. Pendidikan",
+    cuisineType: "Nusantara",
     rating: 4.8,
-    description: "Porsi kuli harga pelajar. Kenyang sampai besok lusa.",
+    description: "Hidangan Padang kaya rempah dengan resep turun temurun.",
     image:
       "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&fit=crop",
     menus: [
       {
-        name: "Nasi Rendang Spesial",
+        name: "Nasi Rendang Sapi",
         price: 25000,
         stock: 40,
         image:
@@ -78,11 +79,12 @@ const dataWarung = [
     ],
   },
   {
-    name: "Sushi Cyberpunk",
-    address: "Night City, Sektor 4",
-    cuisineType: "Japanese",
+    name: "Sushi Sakura",
+    address: "Plaza Kota",
+    cuisineType: "Jepang",
     rating: 4.6,
-    description: "Sushi masa depan. Menyala abangku! 🔥",
+    description:
+      "Sushi segar berkualitas tinggi yang dibuat oleh koki berpengalaman.",
     image:
       "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=800&fit=crop",
     menus: [
@@ -96,11 +98,11 @@ const dataWarung = [
     ],
   },
   {
-    name: "Ramen Resident Evil",
-    address: "Racoon City",
-    cuisineType: "Japanese",
+    name: "Ramen Kyoto",
+    address: "Kawasan Kuliner",
+    cuisineType: "Jepang",
     rating: 4.5,
-    description: "Aman dikonsumsi, tidak mengandung T-Virus.",
+    description: "Ramen kuah kaldu kental dengan topping daging lembut.",
     image:
       "https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=800&fit=crop",
     menus: [
@@ -114,30 +116,30 @@ const dataWarung = [
     ],
   },
   {
-    name: "Warung Kopi Brainrot",
-    address: "Ohio",
-    cuisineType: "Absurd",
+    name: "Steakhouse Prime",
+    address: "Pusat Kota",
+    cuisineType: "Barat",
     rating: 4.9,
     description:
-      "Tempat nongkrong para Sigma dan Sepuh. Skibidi bop bop yes yes.",
+      "Daging sapi pilihan yang dipanggang sempurna sesuai selera Anda.",
     image:
       "https://images.unsplash.com/photo-1572490122747-3968b75bf699?w=800&fit=crop",
     menus: [
       {
-        name: "Skibidi Slicers",
+        name: "Tenderloin Steak",
         price: 99000,
-        stock: 99,
+        stock: 15,
         image:
           "https://images.unsplash.com/photo-1554629947-334ff61d85dc?w=500&fit=crop",
       },
     ],
   },
   {
-    name: "Seafood Sultan Lawata",
+    name: "Seafood Lawata",
     address: "Pantai Lawata Bima",
     cuisineType: "Seafood",
     rating: 4.8,
-    description: "Kepitingnya ditangkap langsung oleh Aquaman.",
+    description: "Hidangan laut segar hasil tangkapan nelayan lokal hari ini.",
     image:
       "https://images.unsplash.com/photo-1565557612165-27a4d538eec7?w=800&fit=crop",
     menus: [
@@ -151,11 +153,11 @@ const dataWarung = [
     ],
   },
   {
-    name: "Dimsum Flutter",
-    address: "Mobile App UI",
+    name: "Dimsum Imperial",
+    address: "Jl. Veteran",
     cuisineType: "Chinese",
     rating: 4.7,
-    description: "Dimsum cross-platform. Enak dimakan di Android maupun iOS.",
+    description: "Dimsum premium buatan tangan dengan isian padat dan lezat.",
     image:
       "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=800&fit=crop",
     menus: [
@@ -169,12 +171,12 @@ const dataWarung = [
     ],
   },
   {
-    name: "Gelato Kali Linux",
-    address: "Jalur Root",
-    cuisineType: "Dessert",
+    name: "Gelato Sweet",
+    address: "Taman Kota",
+    cuisineType: "Pencuci Mulut",
     rating: 5.0,
     description:
-      "Es krim favorit para ethical hacker. Segar menembus firewall.",
+      "Es krim Italia rendah lemak dengan berbagai pilihan rasa segar.",
     image:
       "https://images.unsplash.com/photo-1563805042-7684c8e9e1cb?w=800&fit=crop",
     menus: [
@@ -188,12 +190,12 @@ const dataWarung = [
     ],
   },
   {
-    name: "Burger Kelas E",
-    address: "Kantin Kampus",
-    cuisineType: "Western",
+    name: "Classic Burger",
+    address: "Kantin Universitas",
+    cuisineType: "Barat",
     rating: 4.4,
     description:
-      "Langganan mahasiswa kelas E. Bikin kenyang pas ngerjain tugas.",
+      "Burger daging sapi asli dengan roti lembut dan sayuran segar.",
     image:
       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&fit=crop",
     menus: [
@@ -207,16 +209,17 @@ const dataWarung = [
     ],
   },
   {
-    name: "Bebek Goreng Docker",
-    address: "Server Container",
-    cuisineType: "Indonesian",
+    name: "Bebek Goreng H. Slamet",
+    address: "Jl. Ahmad Yani",
+    cuisineType: "Nusantara",
     rating: 4.7,
-    description: "Digoreng di dalam container terisolasi. Higienis 100%.",
+    description:
+      "Bebek goreng empuk dengan sambal korek pedas yang menggugah selera.",
     image:
       "https://images.unsplash.com/photo-1604908177525-ce54964923f8?w=800&fit=crop",
     menus: [
       {
-        name: "Bebek Goreng Sambal Korek",
+        name: "Bebek Goreng Spesial",
         price: 35000,
         stock: 25,
         image:
@@ -225,11 +228,11 @@ const dataWarung = [
     ],
   },
   {
-    name: "Tacos El Bima",
+    name: "El Taco Lokal",
     address: "Pantai Kalaki",
-    cuisineType: "Mexican",
+    cuisineType: "Meksiko",
     rating: 4.6,
-    description: "Cita rasa Meksiko berpadu dengan kearifan lokal Bima.",
+    description: "Taco renyah dengan isian daging dan saus salsa segar.",
     image:
       "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=800&fit=crop",
     menus: [
@@ -243,11 +246,11 @@ const dataWarung = [
     ],
   },
   {
-    name: "Warung Soto Lamongan",
+    name: "Warung Soto Nusantara",
     address: "Jalan Bypass",
-    cuisineType: "Indonesian",
+    cuisineType: "Nusantara",
     rating: 4.5,
-    description: "Koyanya melimpah ruah seperti bug di kodinganku.",
+    description: "Soto ayam berkuah hangat dengan tambahan koya gurih.",
     image:
       "https://images.unsplash.com/photo-1547592180-85f173990554?w=800&fit=crop",
     menus: [
@@ -261,16 +264,16 @@ const dataWarung = [
     ],
   },
   {
-    name: "Martabak Ryzen 9",
+    name: "Martabak Terang Bulan",
     address: "Perempatan Jalan",
-    cuisineType: "Dessert",
+    cuisineType: "Pencuci Mulut",
     rating: 4.9,
-    description: "Dimasak dengan panas CPU 90 derajat. Cepat matang!",
+    description: "Martabak manis legit dengan aneka topping melimpah.",
     image:
       "https://images.unsplash.com/photo-1554629947-334ff61d85dc?w=800&fit=crop",
     menus: [
       {
-        name: "Martabak Telur Daging",
+        name: "Martabak Keju Coklat",
         price: 60000,
         stock: 20,
         image:
@@ -283,10 +286,10 @@ const dataWarung = [
 mongoose
   .connect(process.env.MONGO_URI || "mongodb://localhost:27017/food_order_db")
   .then(async () => {
-    console.log("Menghapus data warung yang error...");
-    await Restaurant.deleteMany({}); // Hapus bersih data lama
-    console.log("Menanam 15 warung baru...");
+    console.log("Menghapus data lama...");
+    await Restaurant.deleteMany({});
+    console.log("Menyimpan data restoran profesional...");
     await Restaurant.insertMany(dataWarung);
-    console.log("✅ SUKSES! Tekan Ctrl+C untuk keluar.");
+    console.log("✅ DATABASE SUDAH BERSIH! Tekan Ctrl+C untuk keluar.");
     process.exit();
   });
