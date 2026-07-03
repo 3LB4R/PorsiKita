@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
@@ -10,74 +9,12 @@ export default function OrderHistory() {
   }, []);
 
   const fetchOrders = () => {
+    // Ngambil data pesanan khusus si user_001
     axios
       .get("http://localhost:5000/api/orders/user/user_001")
       .then((res) => setOrders(res.data));
   };
 
-  // ✅ handleDelete SUDAH DIKELUARKAN DI SINI (SEJAJAR)
-  const handleDelete = async (id) => {
-    Swal.fire({
-      title: "Yakin mau batalin tender?",
-      text: "Data pesanan akan dihapus permanen dari database!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#ff4757",
-      cancelButtonColor: "gray",
-      confirmButtonText: "Ya, Batalkan!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`http://localhost:5000/api/orders/${id}`);
-          fetchOrders(); // Refresh halaman otomatis
-          Swal.fire(
-            "Dibatalkan!",
-            "Berkas pesanan sudah dimusnahkan.",
-            "success",
-          );
-        } catch (err) {
-          Swal.fire(
-            "Gagal!",
-            err.response?.data?.error || "Terjadi kesalahan",
-            "error",
-          );
-        }
-      }
-    });
-  };
-
-  const handleUpdateStatus = async (id, newStatus) => {
-    try {
-      await axios.put(`http://localhost:5000/api/orders/${id}/status`, {
-        status: newStatus,
-      });
-      fetchOrders(); // Refresh data setelah update
-
-      // POPUP MODERN SUCCESS
-      Swal.fire({
-        title: "Manipulasi Berhasil!",
-        text: `Status diubah jadi ${newStatus} (Semoga aman dari sidak) 🤫`,
-        icon: "success",
-        background: "var(--card-bg)",
-        color: "var(--text-color)",
-        confirmButtonColor: "var(--primary-color)",
-        timer: 2000, // Otomatis hilang dalam 2 detik
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      // POPUP MODERN ERROR
-      Swal.fire({
-        title: "Ups Ketahuan!",
-        text: "Gagal update status. Pastikan Backend udah di-restart!",
-        icon: "error",
-        background: "var(--card-bg)",
-        color: "var(--text-color)",
-        confirmButtonColor: "var(--primary-color)",
-      });
-    }
-  };
-
-  // Fungsi untuk ngasih warna dan teks nyeleneh ke badge status
   const getStatusBadge = (status) => {
     let color, text;
     if (status === "Diproses") {
@@ -119,9 +56,8 @@ export default function OrderHistory() {
           paddingBottom: "1rem",
         }}
       >
-        📜 Laporan Dana... eh Riwayat Pesanan
+        📜 Laporan Dana... eh Riwayat Pesanan (Customer)
       </h2>
-
       {orders.length === 0 && <p>Belum ada riwayat korupsi kalori di sini.</p>}
 
       <div style={{ display: "grid", gap: "1.5rem", marginTop: "2rem" }}>
@@ -131,23 +67,8 @@ export default function OrderHistory() {
             className="card"
             style={{ borderLeft: `5px solid var(--primary-color)` }}
           >
-            {order.status === "Diproses" && (
-              <button
-                onClick={() => handleDelete(order._id)}
-                style={{
-                  background: "#ff4757",
-                  color: "white",
-                  border: "none",
-                  padding: "0.5rem 1rem",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  marginBottom: "1rem",
-                }}
-              >
-                🗑️ Batalkan Proyek
-              </button>
-            )}
+            {/* TOMBOL BATAL SUDAH DIMUSNAHKAN DARI SINI */}
+
             <div
               style={{
                 display: "flex",
@@ -164,7 +85,6 @@ export default function OrderHistory() {
               </h4>
               {getStatusBadge(order.status)}
             </div>
-
             <p style={{ margin: "0.5rem 0" }}>
               <b>🏢 Vendor:</b> {order.restaurantId?.name || "Tender Fiktif"}
             </p>
@@ -172,7 +92,6 @@ export default function OrderHistory() {
               <b>💰 Total Proyek:</b> Rp{" "}
               {order.totalPrice.toLocaleString("id-ID")}
             </p>
-
             <div
               style={{
                 backgroundColor: "var(--bg-color)",
@@ -191,38 +110,6 @@ export default function OrderHistory() {
                   </li>
                 ))}
               </ul>
-            </div>
-
-            {/* --- PANEL ADMIN (KONTROL STATUS) --- */}
-            <div
-              style={{
-                marginTop: "1.5rem",
-                paddingTop: "1rem",
-                borderTop: "1px dashed var(--border-color)",
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-              }}
-            >
-              <span style={{ fontSize: "0.9rem", color: "gray" }}>
-                🛠️ Kontrol Admin (Ubah Status):
-              </span>
-              <select
-                value={order.status}
-                onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
-                style={{
-                  padding: "0.5rem",
-                  borderRadius: "8px",
-                  border: "1px solid var(--border-color)",
-                  backgroundColor: "var(--card-bg)",
-                  color: "var(--text-color)",
-                  cursor: "pointer",
-                }}
-              >
-                <option value="Diproses">Diproses</option>
-                <option value="Dikirim">Dikirim</option>
-                <option value="Selesai">Selesai</option>
-              </select>
             </div>
           </div>
         ))}

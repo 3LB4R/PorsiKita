@@ -22,4 +22,5 @@ router.get("/orders/user/:userId", orderController.getUserOrders);
 router.get("/stats/revenue", orderController.getRestaurantRevenue);
 router.put("/orders/:id/status", orderController.updateOrderStatus);
 router.delete("/orders/:id", orderController.deleteOrder);
+router.get("/orders", orderController.getAllOrders);
 module.exports = router;

@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 
-const restaurantSchema = new mongoose.Schema({
+const menuSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  address: String,
-  cuisineType: String,
-  menus: [
-    {
-      name: String,
-      price: Number,
-      stock: Number,
-      isAvailable: { type: Boolean, default: true },
-      image: { type: String },
-    },
-  ],
+  price: { type: Number, required: true },
+  stock: { type: Number, required: true, min: 0 },
+  isAvailable: { type: Boolean, default: true },
+  image: { type: String },
 });
 
-// Fitur Inovasi (10%): Text Indexing untuk fitur pencarian
-restaurantSchema.index({ name: "text", cuisineType: "text" });
+const restaurantSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  address: { type: String, required: true },
+  cuisineType: { type: String },
+  image: { type: String }, // 📸 Foto Warung
+  description: { type: String }, // 📝 Deskripsi Warung
+  rating: { type: Number, default: 4.8 }, // ⭐ Rating Palsu
+  menus: [menuSchema],
+});
 
 module.exports = mongoose.model("Restaurant", restaurantSchema);

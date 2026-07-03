@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 
 export default function RestaurantDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [cart, setCart] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("Tunai / COD");
+  const [paymentMethod, setPaymentMethod] = useState("Tunai / COD"); // State Pembayaran
 
   useEffect(() => {
     axios
@@ -33,13 +33,12 @@ export default function RestaurantDetail() {
       ]);
     }
   };
+
   const decreaseQuantity = (menuId) => {
     const existing = cart.find((item) => item.menuId === menuId);
     if (existing.quantity === 1) {
-      // Jika jumlahnya sisa 1, hapus item dari keranjang
       setCart(cart.filter((item) => item.menuId !== menuId));
     } else {
-      // Jika lebih dari 1, kurangi jumlahnya
       setCart(
         cart.map((item) =>
           item.menuId === menuId
@@ -49,6 +48,7 @@ export default function RestaurantDetail() {
       );
     }
   };
+
   const handleCheckout = async () => {
     const totalPrice = cart.reduce(
       (acc, item) => acc + item.price * item.quantity,
@@ -62,20 +62,16 @@ export default function RestaurantDetail() {
         totalPrice,
       });
 
-      // POPUP MODERN SUCCESS
       Swal.fire({
         title: "Anggaran Disetujui! 🤝",
-        text: "Pesanan fiktif... eh, pesanan aslimu berhasil dibuat!",
+        text: `Pesanan berhasil dibuat pakai metode ${paymentMethod}!`,
         icon: "success",
         background: "var(--card-bg)",
         color: "var(--text-color)",
         confirmButtonColor: "var(--primary-color)",
-        confirmButtonText: "Lanjut Pantau",
-      }).then(() => {
-        navigate("/history");
-      });
+        confirmButtonText: "Pantau Status",
+      }).then(() => navigate("/history"));
     } catch (err) {
-      // POPUP MODERN ERROR
       Swal.fire({
         title: "Tender Gagal!",
         text: err.response?.data?.error || "Dana ditahan KPK.",
@@ -91,9 +87,15 @@ export default function RestaurantDetail() {
     return <h2 style={{ textAlign: "center" }}>Memuat menu lezat... ⏳</h2>;
 
   return (
-    <div style={{ display: "flex", gap: "2rem", alignItems: "flex-start" }}>
-      {/* Kolom Kiri: Daftar Menu */}
-      <div style={{ flex: 2 }}>
+    <div
+      style={{
+        display: "flex",
+        gap: "2rem",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+      }}
+    >
+      <div style={{ flex: "1 1 600px" }}>
         <h2 style={{ color: "var(--primary-color)" }}>{restaurant.name}</h2>
         <p style={{ color: "gray", marginBottom: "2rem" }}>
           📍 {restaurant.address}
@@ -110,33 +112,35 @@ export default function RestaurantDetail() {
                 alignItems: "center",
               }}
             >
-              <div>
-                <h4 style={{ margin: "0 0 0.5rem 0" }}>
-                  {menu.name}
-                  {/* Tambahkan tag img ini */}
-                  <img
-                    src={
-                      menu.image ||
-                      "https://via.placeholder.com/150?text=No+Image"
-                    }
-                    alt={menu.name}
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                      marginRight: "1rem",
-                    }}
-                  />
-                </h4>
-                <p style={{ margin: 0, fontWeight: "bold" }}>
-                  Rp {menu.price.toLocaleString("id-ID")}
-                </p>
-                <small
-                  style={{ color: menu.stock === 0 ? "#ff4757" : "#2ed573" }}
-                >
-                  Sisa stok: {menu.stock}
-                </small>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+              >
+                {/* 📸 FOTO MAKANAN */}
+                <img
+                  src={
+                    menu.image ||
+                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
+                  }
+                  alt={menu.name}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    borderRadius: "12px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                />
+                <div>
+                  <h4 style={{ margin: "0 0 0.5rem 0" }}>{menu.name}</h4>
+                  <p style={{ margin: 0, fontWeight: "bold" }}>
+                    Rp {menu.price.toLocaleString("id-ID")}
+                  </p>
+                  <small
+                    style={{ color: menu.stock === 0 ? "#ff4757" : "#2ed573" }}
+                  >
+                    Sisa stok: {menu.stock}
+                  </small>
+                </div>
               </div>
               <button
                 className="btn"
@@ -150,10 +154,9 @@ export default function RestaurantDetail() {
         </div>
       </div>
 
-      {/* Kolom Kanan: Keranjang (Sticky) */}
       <div
         className="card"
-        style={{ flex: 1, position: "sticky", top: "2rem" }}
+        style={{ flex: "1 1 300px", position: "sticky", top: "2rem" }}
       >
         <h3>🛒 Keranjang Belanja</h3>
         <hr style={{ borderColor: "var(--border-color)", margin: "1rem 0" }} />
@@ -176,7 +179,6 @@ export default function RestaurantDetail() {
                   marginBottom: "10px",
                 }}
               >
-                {/* Bagian Kiri: Nama dan Tombol Plus Minus */}
                 <div>
                   <span style={{ display: "block", fontWeight: "500" }}>
                     {c.name}
@@ -204,11 +206,9 @@ export default function RestaurantDetail() {
                       {" "}
                       -{" "}
                     </button>
-
                     <b style={{ color: "var(--primary-color)" }}>
                       {c.quantity}
                     </b>
-
                     <button
                       onClick={() =>
                         addToCart({
@@ -232,16 +232,16 @@ export default function RestaurantDetail() {
                     </button>
                   </div>
                 </div>
-
-                {/* Bagian Kanan: Subtotal Harga */}
                 <span style={{ fontWeight: "bold" }}>
                   Rp {(c.price * c.quantity).toLocaleString("id-ID")}
                 </span>
               </div>
             ))}
+
             <hr
               style={{ borderColor: "var(--border-color)", margin: "1rem 0" }}
             />
+
             <div
               style={{
                 display: "flex",
@@ -258,8 +258,16 @@ export default function RestaurantDetail() {
                   .toLocaleString("id-ID")}
               </span>
             </div>
-            <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
-              <label style={{ fontSize: "0.9rem", color: "gray" }}>
+
+            {/* 💳 MENU PEMBAYARAN */}
+            <div style={{ marginTop: "1.5rem" }}>
+              <label
+                style={{
+                  fontSize: "0.9rem",
+                  color: "gray",
+                  fontWeight: "bold",
+                }}
+              >
                 💳 Metode Pembayaran:
               </label>
               <select
@@ -267,23 +275,31 @@ export default function RestaurantDetail() {
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "0.5rem",
+                  padding: "0.8rem",
                   marginTop: "0.5rem",
                   borderRadius: "8px",
                   backgroundColor: "var(--bg-color)",
                   color: "var(--text-color)",
-                  border: "1px solid var(--border-color)",
+                  border: "1px solid var(--primary-color)",
+                  outline: "none",
+                  cursor: "pointer",
                 }}
               >
                 <option value="Tunai / COD">Uang Tunai (COD) 💵</option>
                 <option value="QRIS">QRIS / E-Wallet 📱</option>
-                <option value="Bansos">Potong Bansos 🦅</option>
+                <option value="Bansos">Potong Dana Bansos 🦅</option>
               </select>
             </div>
+
             <button
               className="btn"
               onClick={handleCheckout}
-              style={{ marginTop: "1rem", width: "100%" }}
+              style={{
+                marginTop: "1rem",
+                width: "100%",
+                padding: "1rem",
+                fontSize: "1.1rem",
+              }}
             >
               Checkout Sekarang
             </button>
