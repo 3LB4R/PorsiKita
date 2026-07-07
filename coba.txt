@@ -1,0 +1,5 @@
+git pull
+npm install
+npm run dev
+
+https://rmt4b5ft-5173.asse.devtunnels.ms/

@@ -5,6 +5,14 @@ import { Link } from "react-router-dom";
 export default function Home() {
   const [restaurants, setRestaurants] = useState([]);
   const [search, setSearch] = useState("");
+  const categories = [
+    "Semua",
+    "Nusantara",
+    "Barat",
+    "Jepang",
+    "Minuman",
+    "Seafood",
+  ];
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -17,160 +25,120 @@ export default function Home() {
   }, [search]);
 
   return (
-    <div>
-      {/* 🔮 CSS KHUSUS UNTUK EFEK NEON DAN BLUR */}
-      <style>{`
-        .neon-card {
-          position: relative;
-          background: var(--card-bg);
-          border-radius: 16px;
-          overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          border: 1px solid var(--border-color);
-        }
-        .neon-card:hover {
-          transform: translateY(-10px) scale(1.02);
-          box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3), 0 0 40px rgba(255, 71, 87, 0.1);
-          border-color: var(--primary-color);
-          z-index: 10;
-        }
-        .resto-img {
-          width: 100%;
-          height: 180px;
-          object-fit: cover;
-          transition: transform 0.5s ease;
-        }
-        .neon-card:hover .resto-img {
-          transform: scale(1.1); /* Gambar membesar pas di hover */
-        }
-        .card-content {
-          position: relative;
-          padding: 1.5rem;
-          background: rgba(30, 30, 30, 0.6); /* Efek gelap transparan */
-          backdrop-filter: blur(10px); /* Efek Blur Glassmorphism */
-          -webkit-backdrop-filter: blur(10px);
-          margin-top: -30px;
-          border-radius: 16px 16px 0 0;
-        }
-      `}</style>
+    <div style={{ padding: "0 2rem" }}>
+      {/* Kategori Filters */}
       <div
         style={{
-          textAlign: "center",
-          marginBottom: "3rem",
-          padding: "4rem 1rem",
-          background:
-            "linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, var(--card-bg) 100%)",
-          borderRadius: "24px",
-          border: "1px dashed var(--primary-color)",
+          display: "flex",
+          gap: "1rem",
+          overflowX: "auto",
+          padding: "1rem 0 2rem 0",
         }}
       >
-        <h1 style={{ fontSize: "3rem", marginBottom: "0.5rem", marginTop: 0 }}>
-          PorsiKita - Pesan Antar Makanan 🛵
-        </h1>
-        <p style={{ color: "gray", fontSize: "1.2rem", marginBottom: "2rem" }}>
-          Temukan hidangan favorit dari berbagai restoran terbaik di sekitar
-          Anda.
-        </p>
+        {categories.map((cat, i) => (
+          <button
+            key={i}
+            style={{
+              padding: "0.6rem 1.5rem",
+              borderRadius: "30px",
+              fontWeight: "500",
+              border: i === 0 ? "none" : "1px solid #e0e0e0",
+              backgroundColor: i === 0 ? "var(--text-color)" : "white",
+              color: i === 0 ? "white" : "var(--text-color)",
+              cursor: "pointer",
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div
+        style={{ marginBottom: "2rem", display: "flex", alignItems: "center" }}
+      >
         <input
           type="text"
-          placeholder="🔍 Cari nama restoran atau jenis makanan..."
+          placeholder="🔍 Cari restoran atau makanan..."
           onChange={(e) => setSearch(e.target.value)}
           style={{
-            padding: "1.2rem",
             width: "100%",
-            maxWidth: "650px",
-            borderRadius: "50px",
-            border: "2px solid var(--primary-color)",
-            backgroundColor: "var(--bg-color)",
-            color: "var(--text-color)",
-            fontSize: "1.1rem",
+            padding: "1rem 1.5rem",
+            borderRadius: "30px",
+            border: "none",
+            backgroundColor: "white",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+            fontSize: "1rem",
             outline: "none",
-            boxShadow: "0 0 15px rgba(255, 71, 87, 0.2)",
           }}
         />
       </div>
+
+      {/* Grid Restoran Modern */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-          gap: "2.5rem",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: "2rem",
         }}
       >
         {restaurants.map((r) => (
-          <div key={r._id} className="neon-card">
-            <div style={{ overflow: "hidden" }}>
-              <img
-                src={
-                  r.image ||
-                  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800"
-                }
-                alt={r.name}
-                className="resto-img"
-              />
-            </div>
-            <div className="card-content">
+          <div
+            key={r._id}
+            style={{
+              backgroundColor: "var(--card-bg)",
+              borderRadius: "24px",
+              overflow: "hidden",
+              transition: "transform 0.3s ease",
+              cursor: "pointer",
+            }}
+            className="modern-shadow"
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "translateY(-5px)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.transform = "translateY(0)")
+            }
+          >
+            <img
+              src={r.image}
+              alt={r.name}
+              style={{ width: "100%", height: "220px", objectFit: "cover" }}
+            />
+
+            <div style={{ padding: "1.5rem" }}>
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "flex-start",
+                  alignItems: "center",
+                  marginBottom: "0.5rem",
                 }}
               >
                 <h3
-                  style={{
-                    margin: "0 0 0.5rem 0",
-                    color: "var(--primary-color)",
-                    fontSize: "1.4rem",
-                  }}
+                  style={{ margin: 0, fontSize: "1.25rem", fontWeight: "600" }}
                 >
                   {r.name}
                 </h3>
                 <span
                   style={{
-                    background: "#ffa502",
-                    color: "black",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "8px",
-                    fontWeight: "bold",
-                    fontSize: "0.8rem",
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                 >
                   ⭐ {r.rating}
                 </span>
               </div>
-              <div style={{ marginBottom: "0.8rem" }}>
-                <span
-                  style={{
-                    backgroundColor: "var(--hover-bg)",
-                    padding: "0.3rem 0.8rem",
-                    borderRadius: "20px",
-                    fontSize: "0.75rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  🍽️ Kategori: {r.cuisineType}
-                </span>
-              </div>
               <p
                 style={{
-                  color: "var(--text-color)",
+                  margin: "0 0 1rem 0",
+                  color: "var(--text-muted)",
                   fontSize: "0.9rem",
-                  marginBottom: "0.5rem",
-                  fontStyle: "italic",
-                  opacity: 0.8,
                 }}
               >
-                "{r.description}"
-              </p>
-              <p
-                style={{
-                  color: "gray",
-                  fontSize: "0.85rem",
-                  marginTop: "1rem",
-                  flexGrow: 1,
-                }}
-              >
-                📍 Alamat: {r.address}
+                {r.cuisineType} • {r.address}
               </p>
 
               <Link
@@ -178,14 +146,11 @@ export default function Home() {
                 style={{ textDecoration: "none" }}
               >
                 <button
-                  className="btn"
+                  className="btn-primary"
                   style={{
                     width: "100%",
-                    marginTop: "1.5rem",
-                    borderRadius: "12px",
+                    borderRadius: "14px",
                     padding: "0.8rem",
-                    fontSize: "1rem",
-                    fontWeight: "bold",
                   }}
                 >
                   Lihat Menu

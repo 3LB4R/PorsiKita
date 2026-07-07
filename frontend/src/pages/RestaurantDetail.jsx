@@ -8,7 +8,7 @@ export default function RestaurantDetail() {
   const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState(null);
   const [cart, setCart] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("Tunai / COD"); // State Pembayaran
+  const [paymentMethod, setPaymentMethod] = useState("Tunai");
 
   useEffect(() => {
     axios
@@ -16,40 +16,48 @@ export default function RestaurantDetail() {
       .then((res) => setRestaurant(res.data));
   }, [id]);
 
-  const addToCart = (menu) => {
-    const existing = cart.find((item) => item.menuId === menu._id);
-    if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.menuId === menu._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        ),
-      );
-    } else {
-      setCart([
-        ...cart,
-        { menuId: menu._id, name: menu.name, price: menu.price, quantity: 1 },
-      ]);
-    }
-  };
-
-  const decreaseQuantity = (menuId) => {
-    const existing = cart.find((item) => item.menuId === menuId);
-    if (existing.quantity === 1) {
-      setCart(cart.filter((item) => item.menuId !== menuId));
-    } else {
-      setCart(
-        cart.map((item) =>
-          item.menuId === menuId
-            ? { ...item, quantity: item.quantity - 1 }
-            : item,
-        ),
-      );
+  const handleUpdateCart = (menu, action) => {
+    const existing = cart.find(
+      (item) => item.menuId === menu._id || item.menuId === menu.menuId,
+    );
+    if (action === "add") {
+      if (existing) {
+        setCart(
+          cart.map((item) =>
+            item.menuId === (menu._id || menu.menuId)
+              ? { ...item, quantity: item.quantity + 1 }
+              : item,
+          ),
+        );
+      } else {
+        setCart([
+          ...cart,
+          {
+            menuId: menu._id,
+            name: menu.name,
+            price: menu.price,
+            quantity: 1,
+            image: menu.image,
+          },
+        ]);
+      }
+    } else if (action === "remove" && existing) {
+      if (existing.quantity === 1) {
+        setCart(cart.filter((item) => item.menuId !== existing.menuId));
+      } else {
+        setCart(
+          cart.map((item) =>
+            item.menuId === existing.menuId
+              ? { ...item, quantity: item.quantity - 1 }
+              : item,
+          ),
+        );
+      }
     }
   };
 
   const handleCheckout = async () => {
+    if (cart.length === 0) return;
     const totalPrice = cart.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0,
@@ -61,30 +69,25 @@ export default function RestaurantDetail() {
         items: cart,
         totalPrice,
       });
-
       Swal.fire({
-        title: "Anggaran Disetujui! 🤝",
-        text: `Pesanan berhasil dibuat pakai metode ${paymentMethod}!`,
+        title: "Pesanan Berhasil!",
+        text: "Makanan Anda segera diproses.",
         icon: "success",
-        background: "var(--card-bg)",
-        color: "var(--text-color)",
         confirmButtonColor: "var(--primary-color)",
-        confirmButtonText: "Pantau Status",
       }).then(() => navigate("/history"));
     } catch (err) {
       Swal.fire({
-        title: "Tender Gagal!",
-        text: err.response?.data?.error || "Dana ditahan KPK.",
+        title: "Pesanan Gagal",
+        text: err.response?.data?.error,
         icon: "error",
-        background: "var(--card-bg)",
-        color: "var(--text-color)",
-        confirmButtonColor: "var(--primary-color)",
       });
     }
   };
 
   if (!restaurant)
-    return <h2 style={{ textAlign: "center" }}>Memuat menu lezat... ⏳</h2>;
+    return (
+      <h2 style={{ textAlign: "center", marginTop: "5rem" }}>Memuat... ⏳</h2>
+    );
 
   return (
     <div
@@ -92,165 +95,210 @@ export default function RestaurantDetail() {
         display: "flex",
         gap: "2rem",
         alignItems: "flex-start",
+        padding: "1rem 2rem",
         flexWrap: "wrap",
       }}
     >
+      {/* Kolom Kiri: Menu Makanan */}
       <div style={{ flex: "1 1 600px" }}>
-        <h2 style={{ color: "var(--primary-color)" }}>{restaurant.name}</h2>
-        <p style={{ color: "gray", marginBottom: "2rem" }}>
-          📍 {restaurant.address}
+        <h1
+          style={{
+            fontSize: "2.5rem",
+            fontWeight: "700",
+            margin: "0 0 0.5rem 0",
+          }}
+        >
+          {restaurant.name}
+        </h1>
+        <p
+          style={{
+            color: "var(--text-muted)",
+            marginBottom: "3rem",
+            fontSize: "1.1rem",
+          }}
+        >
+          {restaurant.description}
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div style={{ display: "grid", gap: "1.5rem" }}>
           {restaurant.menus.map((menu) => (
             <div
               key={menu._id}
-              className="card"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                backgroundColor: "white",
+                padding: "1.2rem",
+                borderRadius: "24px",
+                border: "1px solid var(--border-color)",
               }}
             >
               <div
-                style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}
               >
-                {/* 📸 FOTO MAKANAN */}
                 <img
-                  src={
-                    menu.image ||
-                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
-                  }
+                  src={menu.image}
                   alt={menu.name}
                   style={{
-                    width: "80px",
-                    height: "80px",
+                    width: "100px",
+                    height: "100px",
                     objectFit: "cover",
-                    borderRadius: "12px",
-                    border: "1px solid var(--border-color)",
+                    borderRadius: "50%",
                   }}
                 />
                 <div>
-                  <h4 style={{ margin: "0 0 0.5rem 0" }}>{menu.name}</h4>
-                  <p style={{ margin: 0, fontWeight: "bold" }}>
+                  <h3 style={{ margin: "0 0 0.2rem 0", fontSize: "1.2rem" }}>
+                    {menu.name}
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: "600",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     Rp {menu.price.toLocaleString("id-ID")}
                   </p>
-                  <small
-                    style={{ color: menu.stock === 0 ? "#ff4757" : "#2ed573" }}
-                  >
-                    Sisa stok: {menu.stock}
-                  </small>
                 </div>
               </div>
               <button
-                className="btn"
                 disabled={menu.stock === 0}
-                onClick={() => addToCart(menu)}
+                onClick={() => handleUpdateCart(menu, "add")}
+                style={{
+                  background: "var(--text-color)",
+                  color: "white",
+                  border: "none",
+                  width: "45px",
+                  height: "45px",
+                  borderRadius: "50%",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
               >
-                {menu.stock === 0 ? "Habis" : "+ Tambah"}
+                {menu.stock === 0 ? "x" : "+"}
               </button>
             </div>
           ))}
         </div>
       </div>
 
+      {/* Kolom Kanan: Keranjang Modern */}
       <div
-        className="card"
-        style={{ flex: "1 1 300px", position: "sticky", top: "2rem" }}
+        style={{
+          flex: "1 1 350px",
+          backgroundColor: "white",
+          borderRadius: "30px",
+          padding: "2rem",
+          position: "sticky",
+          top: "2rem",
+        }}
+        className="modern-shadow"
       >
-        <h3>🛒 Keranjang Belanja</h3>
-        <hr style={{ borderColor: "var(--border-color)", margin: "1rem 0" }} />
+        <h3 style={{ fontSize: "1.3rem", margin: "0 0 2rem 0" }}>
+          Pesanan Saya
+        </h3>
 
         {cart.length === 0 ? (
-          <p style={{ color: "gray", textAlign: "center" }}>
-            Keranjangmu masih kosong
+          <p style={{ color: "var(--text-muted)", textAlign: "center" }}>
+            Belum ada makanan terpilih.
           </p>
         ) : (
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}
+            style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}
           >
             {cart.map((c, i) => (
               <div
                 key={i}
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "10px",
+                  justifyContent: "space-between",
                 }}
               >
-                <div>
-                  <span style={{ display: "block", fontWeight: "500" }}>
-                    {c.name}
-                  </span>
-                  <div
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
+                  <img
+                    src={c.image}
+                    alt={c.name}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.8rem",
-                      marginTop: "0.3rem",
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
                     }}
-                  >
-                    <button
-                      onClick={() => decreaseQuantity(c.menuId)}
+                  />
+                  <div>
+                    <h4 style={{ margin: "0 0 0.2rem 0", fontSize: "0.95rem" }}>
+                      {c.name}
+                    </h4>
+                    <span
                       style={{
-                        background: "var(--hover-bg)",
-                        color: "var(--text-color)",
-                        border: "1px solid var(--border-color)",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        padding: "0 8px",
-                        fontWeight: "bold",
+                        fontWeight: "600",
+                        fontSize: "0.9rem",
+                        color: "var(--primary-color)",
                       }}
                     >
-                      {" "}
-                      -{" "}
-                    </button>
-                    <b style={{ color: "var(--primary-color)" }}>
-                      {c.quantity}
-                    </b>
-                    <button
-                      onClick={() =>
-                        addToCart({
-                          _id: c.menuId,
-                          name: c.name,
-                          price: c.price,
-                        })
-                      }
-                      style={{
-                        background: "var(--hover-bg)",
-                        color: "var(--text-color)",
-                        border: "1px solid var(--border-color)",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        padding: "0 8px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {" "}
-                      +{" "}
-                    </button>
+                      Rp {c.price.toLocaleString("id-ID")}
+                    </span>
                   </div>
                 </div>
-                <span style={{ fontWeight: "bold" }}>
-                  Rp {(c.price * c.quantity).toLocaleString("id-ID")}
-                </span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.8rem",
+                    backgroundColor: "var(--bg-color)",
+                    padding: "0.3rem 0.5rem",
+                    borderRadius: "20px",
+                  }}
+                >
+                  <button
+                    onClick={() => handleUpdateCart(c, "remove")}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    -
+                  </button>
+                  <span style={{ fontWeight: "600", fontSize: "0.9rem" }}>
+                    {c.quantity}
+                  </span>
+                  <button
+                    onClick={() => handleUpdateCart(c, "add")}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             ))}
 
-            <hr
-              style={{ borderColor: "var(--border-color)", margin: "1rem 0" }}
-            />
+            <div
+              style={{
+                borderTop: "2px dashed var(--border-color)",
+                margin: "1rem 0",
+              }}
+            ></div>
 
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                fontWeight: "bold",
+                fontWeight: "700",
                 fontSize: "1.2rem",
               }}
             >
-              <span>Total:</span>
+              <span>Total Tagihan</span>
               <span>
                 Rp{" "}
                 {cart
@@ -259,49 +307,17 @@ export default function RestaurantDetail() {
               </span>
             </div>
 
-            {/* 💳 MENU PEMBAYARAN */}
-            <div style={{ marginTop: "1.5rem" }}>
-              <label
-                style={{
-                  fontSize: "0.9rem",
-                  color: "gray",
-                  fontWeight: "bold",
-                }}
-              >
-                💳 Metode Pembayaran:
-              </label>
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "0.8rem",
-                  marginTop: "0.5rem",
-                  borderRadius: "8px",
-                  backgroundColor: "var(--bg-color)",
-                  color: "var(--text-color)",
-                  border: "1px solid var(--primary-color)",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-              >
-                <option value="Tunai / COD">Tunai (Cash on Delivery)</option>
-                <option value="QRIS">QRIS / E-Wallet</option>
-                <option value="Transfer Bank">Transfer Bank</option>
-              </select>
-            </div>
-
             <button
-              className="btn"
+              className="btn-primary"
               onClick={handleCheckout}
               style={{
-                marginTop: "1rem",
                 width: "100%",
+                marginTop: "1rem",
                 padding: "1rem",
-                fontSize: "1.1rem",
+                fontSize: "1rem",
               }}
             >
-              Checkout Sekarang
+              Konfirmasi Pesanan
             </button>
           </div>
         )}
